@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Cumpleaños y Feriados 2026 - Coca-Cola Maipú</title>
+    <style>
+        :root {
+            --coca-red: #F40009;
+            --coca-black: #1A1A1A;
+            --coca-white: #FFFFFF;
+            --gray-light: #F7F7F7;
+            --gray-border: #E0E0E0;
+            --text-main: #1A1A1A;
+            --card-bg: #FFFFFF;
+            --irrenunciable-bg: #FFEBEB;
+            --irrenunciable-border: #FF3B30;
+            --irrenunciable-text: #D00000;
+            --avatar-bg: #EAEAEA;
+        }
+
+        [data-theme="dark"] {
+            --gray-light: #121212;
+            --coca-black: #FFFFFF;
+            --text-main: #E0E0E0;
+            --card-bg: #1E1E1E;
+            --gray-border: #333333;
+            --irrenunciable-bg: #2C1A1A;
+            --avatar-bg: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-light);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--coca-red);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .header-sub {
+            font-size: 1.1em;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 6px 15px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Banner de Alertas Dinámicas */
+        .alert-banner {
+            background-color: #333;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.95em;
+            border-bottom: 3px solid var(--coca-red);
+        }
+        .alert-line { display: flex; align-items: center; gap: 8px; }
+        .alert-banner .highlight { color: #FF4D4D; font-weight: bold; }
+
+        .toolbar {
+            background-color: #1A1A1A;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px 20px 5px 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 2px solid #333;
+            background-color: #2b2b2b;
+            color: white;
+            font-size: 1em;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus { border-color: var(--coca-red); }
+
+        nav {
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav button {
+            background-color: transparent;
+            color: white;
+            border: 2px solid transparent;
+            padding: 6px 14px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        nav button:hover { background-color: var(--coca-red); }
+        nav button.active { background-color: var(--coca-red); border-color: white; }
+        nav button.btn-global { background-color: #2b2b2b; border: 2px solid var(--coca-red); }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .mes-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border-top: 5px solid #333;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .mes-card:hover { transform: translateY(-3px); }
+        .mes-card.mes-actual {
+            border-top: 5px solid var(--coca-red);
+            box-shadow: 0 0 15px rgba(244, 0, 9, 0.2);
+        }
+
+        .mes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--gray-border);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .mes-titulo {
+            font-size: 1.4em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mes-actual-badge {
+            display: none;
+            background-color: var(--coca-red);
+            color: white;
+            font-size: 0.45em;
+            padding: 3px 8px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+        .mes-card.mes-actual .mes-actual-badge { display: inline-block; }
+
+        .stats-badge {
+            font-size: 0.75em;
+            color: #777;
+            font-weight: bold;
+            background-color: var(--gray-light);
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+
+        .seccion-titulo {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            color: #888;
+            font-weight: bold;
+            margin: 12px 0 6px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .lista-eventos { list-style: none; padding: 0; margin: 0; }
+        .lista-eventos li {
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--gray-border);
+            display: flex;
+            align-items: center;
+            font-size: 0.9em;
+        }
+        .lista-eventos li:last-child { border-bottom: none; }
+
+        .dia-badge {
+            font-weight: bold;
+            background-color: var(--text-main);
+            color: var(--card-bg);
+            min-width: 24px;
+            height: 24px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        .lista-cumples li .dia-badge { background-color: var(--coca-red); color: white; }
+
+        .avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: var(--avatar-bg);
+            color: var(--coca-black);
+            font-size: 0.75em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            text-transform: uppercase;
+            border: 1px solid var(--gray-border);
+        }
+
+        .feriado-item { background-color: var(--gray-light); border-radius: 6px; margin-bottom: 4px; }
+        .feriado-emoji { margin-right: 8px; font-size: 1.1em; }
+        
+        .feriado-item.irrenunciable {
+            background-color: var(--irrenunciable-bg);
+            border-left: 4px solid var(--irrenunciable-border);
+            color: var(--irrenunciable-text);
+        }
+        .feriado-item.irrenunciable .dia-badge { background-color: var(--irrenunciable-border); color: white; }
+        .tag-irrenunciable {
+            font-size: 0.7em;
+            font-weight: bold;
+            background-color: var(--irrenunciable-border);
+            color: white;
+            padding: 1px 5px;
+            border-radius: 4px;
+            margin-left: auto;
+            text-transform: uppercase;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 20px;
+            background-color: #1A1A1A;
+            color: #b0b0b0;
+            font-size: 0.88em;
+            border-top: 3px solid var(--coca-red);
+            margin-top: 40px;
+            line-height: 1.6;
+        }
+
+        footer .author-name {
+            color: #FFFFFF;
+            font-weight: bold;
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        footer .author-dept {
+            color: var(--coca-red);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        footer .author-info {
+            display: block;
+            color: #888888;
+            font-size: 0.95em;
+        }
+
+        footer .author-info a {
+            color: #0088FF;
+            text-decoration: none;
+        }
+
+        footer .author-info a:hover {
+            text-decoration: underline;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--coca-red);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 600px) {
+            header { flex-direction: column; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-sub">Coca-Cola Maipú</div>
+        <h1>Panel de Cumpleaños y Feriados</h1>
+        <div style="width: 140px; display: block;"></div> </header>
+
+    <div id="alert-banner" class="alert-banner">
+        <div class="alert-line" id="alert-birthday">🎉 Cargando cumpleaños...</div>
+        <div class="alert-line" id="alert-next-birthday">🎁 Calculando próximo cumpleaños...</div>
+        <div class="alert-line" id="alert-holiday">🇨🇱 Cargando próximo feriado...</div>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-container">
+            <input type="text" id="search-box" class="search-box" placeholder="🔍 Buscar compañero por nombre..." oninput="filtrarNombres()">
+        </div>
+        <nav id="menu-meses">
+            <button class="btn-global active" onclick="mostrarGlobal()">Ver Todo</button>
+            <button onclick="mostrarMes(0)">Ene</button>
+            <button onclick="mostrarMes(1)">Feb</button>
+            <button onclick="mostrarMes(2)">Mar</button>
+            <button onclick="mostrarMes(3)">Abr</button>
+            <button onclick="mostrarMes(4)">May</button>
+            <button onclick="mostrarMes(5)">Jun</button>
+            <button onclick="mostrarMes(6)">Jul</button>
+            <button onclick="mostrarMes(7)">Ago</button>
+            <button onclick="mostrarMes(8)">Sep</button>
+            <button onclick="mostrarMes(9)">Oct</button>
+            <button onclick="mostrarMes(10)">Nov</button>
+            <button onclick="mostrarMes(11)">Dic</button>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div id="calendario-grid" class="grid-container">
+            
+            <div class="mes-card" data-mes="0">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Enero <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">1 🎂 | 1 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">24</span><div class="avatar">JL</div><span class="nombre">JOHNNY EDUARDO LOPEZ COLLIO</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item irrenunciable"><span class="dia-badge">01</span><span class="feriado-emoji">🥂</span><span class="nombre">Año Nuevo</span><span class="tag-irrenunciable">Irrenunciable</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="1">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Febrero <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">5 🎂 | 0 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">01</span><div class="avatar">CS</div><span class="nombre">CESAR MARCELO SEREÑO GUAJARDO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">08</span><div class="avatar">VG</div><span class="nombre">VICTOR ANGEL GONZALEZ CHAVEZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">18</span><div class="avatar">JY</div><span class="nombre">JUAN ANDRES YAÑEZ ARRIAZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">20</span><div class="avatar">WD</div><span class="nombre">WILSON DASILMA DASILMA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">21</span><div class="avatar">MR</div><span class="nombre">MANUEL ALEJANDRO ROMAN BERLAND</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos"><li>No hay feriados</li></ul>
+            </div>
+
+            <div class="mes-card" data-mes="2">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Marzo <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">3 🎂 | 0 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">04</span><div class="avatar">RG</div><span class="nombre">REYNALD GAY NAN</span></li>
+                    <li class="cumple-item"><span class="dia-badge">17</span><div class="avatar">JM</div><span class="nombre">JOSE ANTONIO MONTAÑEZ ESPINOZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">29</span><div class="avatar">CM</div><span class="nombre">CLAUDIO ANDRES MUÑOZ OSORIO</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos"><li>No hay feriados</li></ul>
+            </div>
+
+            <div class="mes-card" data-mes="3">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Abril <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">2 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">19</span><div class="avatar">FT</div><span class="nombre">FRANCO JESUS TAPIA CABELLO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">26</span><div class="avatar">BH</div><span class="nombre">BRANDON STEVENS HERNANDEZ ORTEGA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">03</span><span class="feriado-emoji">✝️</span><span class="nombre">Viernes Santo</span></li>
+                    <li class="feriado-item"><span class="dia-badge">04</span><span class="feriado-emoji">🪵</span><span class="nombre">Sábado Santo</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="4">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Mayo <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">6 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">10</span><div class="avatar">PP</div><span class="nombre">PAULO JINO PEREZ PEREZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">11</span><div class="avatar">CL</div><span class="nombre">CESAR LOPEZ VALLEJOS</span></li>
+                    <li class="cumple-item"><span class="dia-badge">23</span><div class="avatar">AM</div><span class="nombre">ALDO PATRICIO MOSCOSO OJEDA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">25</span><div class="avatar">JC</div><span class="nombre">JOSE ISMAEL CALDERA LILLO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">26</span><div class="avatar">RA</div><span class="nombre">RENE GILBERTO ANTIÑIR ARRIAGADA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">31</span><div class="avatar">RM</div><span class="nombre">ROLANDO IGNACIO MALDONADO BARAHONA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item irrenunciable"><span class="dia-badge">01</span><span class="feriado-emoji">🛠️</span><span class="nombre">Día del Trabajo</span><span class="tag-irrenunciable">Irrenunciable</span></li>
+                    <li class="feriado-item"><span class="dia-badge">21</span><span class="feriado-emoji">⚓</span><span class="nombre">Glorias Navales</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="5">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Junio <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">4 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">07</span><div class="avatar">DL</div><span class="nombre">DIEGO ANTONIO LOPEZ MELLA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">08</span><div class="avatar">FM</div><span class="nombre">FRANCISCO EDUARDO MARIN MARIN</span></li>
+                    <li class="cumple-item"><span class="dia-badge">19</span><div class="avatar">MR</div><span class="nombre">MOISES CUPERTINO REYES VEGA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">26</span><div class="avatar">CG</div><span class="nombre">CATALINA CONSTANZA GOMEZ ABARCA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">21</span><span class="feriado-emoji">☀️</span><span class="nombre">Pueblos Indígenas</span></li>
+                    <li class="feriado-item"><span class="dia-badge">29</span><span class="feriado-emoji">🔑</span><span class="nombre">San Pedro y San Pablo</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="6">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Julio <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">7 🎂 | 1 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">10</span><div class="avatar">OM</div><span class="nombre">OMAR ANDRES MUÑOZ GUTIERREZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">16</span><div class="avatar">MB</div><span class="nombre">MORIS ANDRES BASAI SILVA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">19</span><div class="avatar">RR</div><span class="nombre">JOHN MICHEL RIFFO REBOLLEDO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">24</span><div class="avatar">OV</div><span class="nombre">OSCAR EDUARDO VALDENEGRO ASCENCIO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">25</span><div class="avatar">MS</div><span class="nombre">MANUEL ENRIQUE SAN MARTIN VERDEJO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">28</span><div class="avatar">CS</div><span class="nombre">CRISTIAN DAVID SANDOVAL MARIN</span></li>
+                    <li class="cumple-item"><span class="dia-badge">31</span><div class="avatar">SO</div><span class="nombre">SERGIO OSVALDO OPAZO LORCA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">16</span><span class="feriado-emoji">🛐</span><span class="nombre">Virgen del Carmen</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="7">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Agosto <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">6 🎂 | 1 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">01</span><div class="avatar">AC</div><span class="nombre">ALBERTO ALEJANDRO CAMPOS CORTES</span></li>
+                    <li class="cumple-item"><span class="dia-badge">05</span><div class="avatar">JR</div><span class="nombre">JUAN ENRIQUE ROSALES NORAMBUENA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">07</span><div class="avatar">HC</div><span class="nombre">HERNAN ANDRES CARRASCO RIVERA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">16</span><div class="avatar">EL</div><span class="nombre">EDITH ALEJANDRA LORCA MARTINEZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">18</span><div class="avatar">BP</div><span class="nombre">CESAR LIZANDRO BUSTAMANTE PARDO</span></li>
+                    <li class="cumple-item"><span class="dia-badge">29</span><div class="avatar">AP</div><span class="nombre">ALFREDO MANUEL ARAVENA PALMA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">15</span><span class="feriado-emoji">👼</span><span class="nombre">Asunción de la Virgen</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="8">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Septiembre <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">4 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">08</span><div class="avatar">VF</div><span class="nombre">SERGIO ANTONIO VIDAL FREDES</span></li>
+                    <li class="cumple-item"><span class="dia-badge">09</span><div class="avatar">LL</div><span class="nombre">HANS WESLEY LACROIX LACROIX</span></li>
+                    <li class="cumple-item"><span class="dia-badge">20</span><div class="avatar">MG</div><span class="nombre">ALBERTO ANDRES MARTINEZ GONZALEZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">27</span><div class="avatar">GU</div><span class="nombre">FRANCISCO ANDRES GALLARDO URZUA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item irrenunciable"><span class="dia-badge">18</span><span class="feriado-emoji">🇨🇱</span><span class="nombre">Independencia Nacional</span><span class="tag-irrenunciable">Irrenunciable</span></li>
+                    <li class="feriado-item irrenunciable"><span class="dia-badge">19</span><span class="feriado-emoji">🎖️</span><span class="nombre">Glorias del Ejército</span><span class="tag-irrenunciable">Irrenunciable</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="9">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Octubre <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">4 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">01</span><div class="avatar">HB</div><span class="nombre">ALEXIS EDUARDO HERNANDEZ BONZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">02</span><div class="avatar">MS</div><span class="nombre">RODRIGO ANDRES MARTINEZ SOZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">16</span><div class="avatar">HB</div><span class="nombre">RUBEN ALEXIS HERNANDEZ BONZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">28</span><div class="avatar">GL</div><span class="nombre">JONATHAN IGNACIO GUTIERREZ LOYOLA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">12</span><span class="feriado-emoji">🌎</span><span class="nombre">Encuentro de Dos Mundos</span></li>
+                    <li class="feriado-item"><span class="dia-badge">31</span><span class="feriado-emoji">⛪</span><span class="nombre">Día de las Iglesias Evangélicas</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="10">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Noviembre <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">5 🎂 | 1 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">06</span><div class="avatar">PV</div><span class="nombre">JUAN CARLOS PASTEN VILLARROEL</span></li>
+                    <li class="cumple-item"><span class="dia-badge">09</span><div class="avatar">LF</div><span class="nombre">AARON ESTEBAN LINQUEO FERNANDEZ</span></li>
+                    <li class="cumple-item"><span class="dia-badge">10</span><div class="avatar">SE</div><span class="nombre">JORGE ANTONIO SEPULVEDA ESPINOZA</span></li>
+                    <li class="cumple-item"><span class="dia-badge">14</span><div class="avatar">PB</div><span class="nombre">NICOLAS RODRIGO PALMA BURGOS</span></li>
+                    <li class="cumple-item"><span class="dia-badge">16</span><div class="avatar">GA</div><span class="nombre">DAVID EDUARDO GUAJARDO ARRIAGADA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">01</span><span class="feriado-emoji">🌼</span><span class="nombre">Día de Todos los Santos</span></li>
+                </ul>
+            </div>
+
+            <div class="mes-card" data-mes="11">
+                <div class="mes-header">
+                    <h3 class="mes-titulo">Diciembre <span class="mes-actual-badge">ACTUAL</span></h3>
+                    <span class="stats-badge">2 🎂 | 2 🇨🇱</span>
+                </div>
+                <div class="seccion-titulo">🎉 Cumpleaños</div>
+                <ul class="lista-eventos lista-cumples">
+                    <li class="cumple-item"><span class="dia-badge">08</span><div class="avatar">VV</div><span class="nombre">ALEX IVAN VIDAL VIDAL</span></li>
+                    <li class="cumple-item"><span class="dia-badge">30</span><div class="avatar">RO</div><span class="nombre">PEDRO EDUARDO RAMIREZ OTEIZA</span></li>
+                </ul>
+                <div class="seccion-titulo">🇨🇱 Feriados</div>
+                <ul class="lista-eventos">
+                    <li class="feriado-item"><span class="dia-badge">08</span><span class="feriado-emoji">🕊️</span><span class="nombre">Inmaculada Concepción</span></li>
+                    <li class="feriado-item irrenunciable"><span class="dia-badge">25</span><span class="feriado-emoji">🎄</span><span class="nombre">Navidad</span><span class="tag-irrenunciable">Irrenunciable</span></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <span style="display: block; font-size: 0.85em; color: #888888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">Hecho por</span>
+        <span class="author-name">JoseAntonio Montañez</span>
+        <span class="author-dept">Control Ticket Maipú</span>
+        <span class="author-info">
+            Centro Distribución Maipú | Santa Marta 1313<br>
+            Anexo: 3361 | <a href="mailto:jmontanez@koandina.com">jmontanez@koandina.com</a>
+        </span>
+    </footer>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        const cumpleanosDb = [
+            {mes: 0, dia: 24, nombre: "JOHNNY EDUARDO LOPEZ COLLIO"},
+            {mes: 1, dia: 1, nombre: "CESAR MARCELO SEREÑO GUAJARDO"},
+            {mes: 1, dia: 8, nombre: "VICTOR ANGEL GONZALEZ CHAVEZ"},
+            {mes: 1, dia: 18, nombre: "JUAN ANDRES YAÑEZ ARRIAZA"},
+            {mes: 1, dia: 20, nombre: "WILSON DASILMA DASILMA"},
+            {mes: 1, dia: 21, nombre: "MANUEL ALEJANDRO ROMAN BERLAND"},
+            {mes: 2, dia: 4, nombre: "REYNALD GAY NAN"},
+            {mes: 2, dia: 17, nombre: "JOSE ANTONIO MONTAÑEZ ESPINOZA"},
+            {mes: 2, dia: 29, nombre: "CLAUDIO ANDRES MUÑOZ OSORIO"},
+            {mes: 3, dia: 19, nombre: "FRANCO JESUS TAPIA CABELLO"},
+            {mes: 3, dia: 26, nombre: "BRANDON STEVENS HERNANDEZ ORTEGA"},
+            {mes: 4, dia: 10, nombre: "PAULO JINO PEREZ PEREZ"},
+            {mes: 4, dia: 11, nombre: "CESAR LOPEZ VALLEJOS"},
+            {mes: 4, dia: 23, nombre: "ALDO PATRICIO MOSCOSO OJEDA"},
+            {mes: 4, dia: 25, nombre: "JOSE ISMAEL CALDERA LILLO"},
+            {mes: 4, dia: 26, nombre: "RENE GILBERTO ANTIÑIR ARRIAGADA"},
+            {mes: 4, dia: 31, nombre: "ROLANDO IGNACIO MALDONADO BARAHONA"},
+            {mes: 5, dia: 7, nombre: "DIEGO ANTONIO LOPEZ MELLA"},
+            {mes: 5, dia: 8, font: "FRANCISCO EDUARDO MARIN MARIN"},
+            {mes: 5, dia: 19, nombre: "MOISES CUPERTINO REYES VEGA"},
+            {mes: 5, dia: 26, nombre: "CATALINA CONSTANZA GOMEZ ABARCA"},
+            {mes: 6, dia: 10, nombre: "OMAR ANDRES MUÑOZ GUTIERREZ"},
+            {mes: 6, dia: 16, nombre: "MORIS ANDRES BASAI SILVA"},
+            {mes: 6, dia: 19, nombre: "JOHN MICHEL RIFFO REBOLLEDO"},
+            {mes: 6, dia: 24, nombre: "OSCAR EDUARDO VALDENEGRO ASCENCIO"},
+            {mes: 6, dia: 25, nombre: "MANUEL ENRIQUE SAN MARTIN VERDEJO"},
+            {mes: 6, dia: 28, nombre: "CRISTIAN DAVID SANDOVAL MARIN"},
+            {mes: 6, dia: 31, nombre: "SERGIO OSVALDO OPAZO LORCA"},
+            {mes: 7, dia: 1, nombre: "ALBERTO ALEJANDRO CAMPOS CORTES"},
+            {mes: 7, dia: 5, nombre: "JUAN ENRIQUE ROSALES NORAMBUENA"},
+            {mes: 7, dia: 7, nombre: "HERNAN ANDRES CARRASCO RIVERA"},
+            {mes: 7, dia: 16, nombre: "EDITH ALEJANDRA LORCA MARTINEZ"},
+            {mes: 7, dia: 18, nombre: "CESAR LIZANDRO BUSTAMANTE PARDO"},
+            {mes: 7, dia: 29, nombre: "ALFREDO MANUEL ARAVENA PALMA"},
+            {mes: 8, dia: 8, nombre: "SERGIO ANTONIO VIDAL FREDES"},
+            {mes: 8, dia: 9, nombre: "HANS WESLEY LACROIX LACROIX"},
+            {mes: 8, dia: 20, nombre: "ALBERTO ANDRES MARTINEZ GONZALEZ"},
+            {mes: 8, dia: 27, nombre: "FRANCISCO ANDRES GALLARDO URZUA"},
+            {mes: 9, dia: 1, nombre: "ALEXIS EDUARDO HERNANDEZ BONZA"},
+            {mes: 9, dia: 2, nombre: "RODRIGO ANDRES MARTINEZ SOZA"},
+            {mes: 9, dia: 16, nombre: "RUBEN ALEXIS HERNANDEZ BONZA"},
+            {mes: 9, dia: 28, nombre: "JONATHAN IGNACIO GUTIERREZ LOYOLA"},
+            {mes: 10, dia: 6, nombre: "JUAN CARLOS PASTEN VILLARROEL"},
+            {mes: 10, dia: 9, nombre: "AARON ESTEBAN LINQUEO FERNANDEZ"},
+            {mes: 10, dia: 10, nombre: "JORGE ANTONIO SEPULVEDA ESPINOZA"},
+            {mes: 10, dia: 14, nombre: "NICOLAS RODRIGO PALMA BURGOS"},
+            {mes: 10, dia: 16, nombre: "DAVID EDUARDO GUAJARDO ARRIAGADA"},
+            {mes: 11, dia: 8, nombre: "ALEX IVAN VIDAL VIDAL"},
+            {mes: 11, dia: 30, nombre: "PEDRO EDUARDO RAMIREZ OTEIZA"}
+        ];
+
+        const feriadosDb = [
+            {mes: 0, dia: 1, nombre: "Año Nuevo", emoji: "🥂"},
+            {mes: 3, dia: 3, nombre: "Viernes Santo", emoji: "✝️"},
+            {mes: 3, dia: 4, nombre: "Sábado Santo", emoji: "🪵"},
+            {mes: 4, dia: 1, nombre: "Día del Trabajo", emoji: "🛠️"},
+            {mes: 4, dia: 21, nombre: "Glorias Navales", emoji: "⚓"},
+            {mes: 5, dia: 21, nombre: "Pueblos Indígenas", emoji: "☀️"},
+            {mes: 5, dia: 29, nombre: "San Pedro y San Pablo", emoji: "🔑"},
+            {mes: 6, dia: 16, nombre: "Virgen del Carmen", emoji: "🛐"},
+            {mes: 7, dia: 15, nombre: "Asunción de la Virgen", emoji: "👼"},
+            {mes: 8, dia: 18, nombre: "Independencia Nacional", emoji: "🇨🇱"},
+            {mes: 8, dia: 19, nombre: "Glorias del Ejército", emoji: "🎖️"},
+            {mes: 9, dia: 12, nombre: "Encuentro de Dos Mundos", emoji: "🌎"},
+            {mes: 9, dia: 31, nombre: "Día de las Iglesias Evangélicas", emoji: "⛪"},
+            {mes: 10, dia: 1, nombre: "Día de Todos los Santos", emoji: "🌼"},
+            {mes: 11, dia: 8, nombre: "Inmaculada Concepción", emoji: "🕊️"},
+            {mes: 11, dia: 25, nombre: "Navidad", emoji: "🎄"}
+        ];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const fechaActual = new Date();
+            const añoActual = fechaActual.getFullYear();
+            const mesActualIdx = fechaActual.getMonth();
+            const diaActual = fechaActual.getDate();
+
+            const tarjetas = document.querySelectorAll('.mes-card');
+            tarjetas.forEach(tarjeta => {
+                if (parseInt(tarjeta.getAttribute('data-mes')) === mesActualIdx) {
+                    tarjeta.classList.add('mes-actual');
+                }
+            });
+
+            // 1. Alerta de cumpleaños de hoy
+            const cumpleHoy = cumpleanosDb.find(c => c.mes === mesActualIdx && c.dia === diaActual);
+            const bdayBanner = document.getElementById('alert-birthday');
+            if (cumpleHoy) {
+                bdayBanner.innerHTML = `🎉 ¡Hoy está de cumpleaños <span class="highlight">${cumpleHoy.nombre}</span>! ¡Felicítalo!`;
+            } else {
+                bdayBanner.innerHTML = `🎂 Hoy no se registran cumpleaños en el equipo.`;
+            }
+
+            // 2. Alerta de próximo cumpleaños
+            let proximoCumple = null;
+            let minDiffCumple = Infinity;
+
+            cumpleanosDb.forEach(c => {
+                let cDate = new Date(añoActual, c.mes, c.dia);
+                let diff = cDate - fechaActual;
+                
+                if (diff < 0) {
+                    cDate = new Date(añoActual + 1, c.mes, c.dia);
+                    diff = cDate - fechaActual;
+                }
+
+                if (diff >= 0 && diff < minDiffCumple) {
+                    minDiffCumple = diff;
+                    proximoCumple = c;
+                }
+            });
+
+            const nextBdayBanner = document.getElementById('alert-next-birthday');
+            if (proximoCumple) {
+                const diasFaltantesCumple = Math.ceil(minDiffCumple / (1000 * 60 * 60 * 24));
+                nextBdayBanner.innerHTML = `🎁 Próximo cumpleaños: <span class="highlight">${proximoCumple.nombre}</span> (${proximoCumple.dia} de ${obtenerNombreMes(proximoCumple.mes)}) en ${diasFaltantesCumple} días.`;
+            }
+
+            // 3. Alerta de próximo feriado
+            let proximoFeriado = null;
+            let minDiffFeriado = Infinity;
+            feriadosDb.forEach(f => {
+                let fDate = new Date(añoActual, f.mes, f.dia);
+                let diff = fDate - fechaActual;
+                if (diff < 0) {
+                    fDate = new Date(añoActual + 1, f.mes, f.dia);
+                    diff = fDate - fechaActual;
+                }
+                if (diff >= 0 && diff < minDiffFeriado) {
+                    minDiffFeriado = diff;
+                    proximoFeriado = f;
+                }
+            });
+
+            const holidayBanner = document.getElementById('alert-holiday');
+            if (proximoFeriado) {
+                const diasFaltantes = Math.ceil(minDiffFeriado / (1000 * 60 * 60 * 24));
+                holidayBanner.innerHTML = `🇨🇱 Próximo feriado: <span class="highlight">${proximoFeriado.emoji} ${proximoFeriado.nombre}</span> (${proximoFeriado.dia} de ${obtenerNombreMes(proximoFeriado.mes)}) ${diasFaltantes === 0 ? '¡HOY!' : 'en ' + diasFaltantes + ' días'}.`;
+            } else {
+                holidayBanner.innerHTML = `🇨🇱 No quedan más feriados registrados para el año.`;
+            }
+
+            mostrarMes(mesActualIdx);
+        });
+
+        function obtenerNombreMes(idx) {
+            const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            return meses[idx];
+        }
+
+        function mostrarMes(mesNumero) {
+            document.getElementById('search-box').value = '';
+            const botones = document.querySelectorAll('#menu-meses button');
+            botones.forEach(btn => btn.classList.remove('active'));
+            if (botones[mesNumero + 1]) botones[mesNumero + 1].classList.add('active');
+
+            const tarjetas = document.querySelectorAll('.mes-card');
+            tarjetas.forEach(tarjeta => {
+                if (parseInt(tarjeta.getAttribute('data-mes')) === mesNumero) {
+                    tarjeta.classList.remove('hidden');
+                } else {
+                    tarjeta.classList.add('hidden');
+                }
+            });
+        }
+
+        function mostrarGlobal() {
+            document.getElementById('search-box').value = '';
+            const botones = document.querySelectorAll('#menu-meses button');
+            botones.forEach(btn => btn.classList.remove('active'));
+            botones[0].classList.add('active');
+
+            const tarjetas = document.querySelectorAll('.mes-card');
+            tarjetas.forEach(tarjeta => tarjeta.classList.remove('hidden'));
+            document.querySelectorAll('.cumple-item').forEach(i => i.classList.remove('hidden'));
+        }
+
+        function filtrarNombres() {
+            const query = document.getElementById('search-box').value.toLowerCase();
+            const botones = document.querySelectorAll('#menu-meses button');
+            
+            if (query === '') {
+                mostrarGlobal();
+                return;
+            }
+
+            botones.forEach(btn => btn.classList.remove('active'));
+            botones[0].classList.add('active');
+
+            const tarjetas = document.querySelectorAll('.mes-card');
+            tarjetas.forEach(tarjeta => {
+                const items = tarjeta.querySelectorAll('.cumple-item');
+                let mesTieneCoincidencia = false;
+
+                items.forEach(item => {
+                    const nombre = item.querySelector('.nombre').textContent.toLowerCase();
+                    if (nombre.includes(query)) {
+                        item.classList.remove('hidden');
+                        mesTieneCoincidencia = true;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                if (mesTieneCoincidencia) {
+                    tarjeta.classList.remove('hidden');
+                } else {
+                    tarjeta.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
+</body>
+</html>
